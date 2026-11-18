@@ -410,6 +410,8 @@
       font-weight: 800;
       cursor: pointer;
     }
+
+    /* 4桁パスコード専用ロック画面 */
     .lock-screen {
       position: fixed;
       inset: 0;
@@ -424,6 +426,60 @@
       text-align: center;
     }
     .lock-screen.active { display: flex; }
+    .pin-dots {
+      display: flex;
+      gap: 16px;
+      margin: 18px 0 10px;
+    }
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #93c5fd;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .pin-dot.filled {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      transform: scale(1.1);
+    }
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 74px);
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .pin-key {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .pin-key:active {
+      background: rgba(59, 130, 246, 0.5);
+    }
+    .pin-key.empty {
+      border: none;
+      background: transparent;
+      cursor: default;
+    }
+    .pin-key.del-key {
+      font-size: 18px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+    }
+
     .toast {
       position: fixed;
       top: 64px;
@@ -445,13 +501,19 @@
 </head>
 <body>
 
+  <!-- 4桁パスコードロック画面 -->
   <div id="lockScreen" class="lock-screen">
-    <div style="font-size: 42px; margin-bottom: 10px;">🔒</div>
-    <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 6px;">ふたりの家計簿</h2>
-    <p style="font-size: 12px; color: #94a3b8; margin-bottom: 18px;">2人だけの合言葉を入力してロック解除</p>
-    <input type="password" id="unlockInput" placeholder="合言葉を入力" style="width: 240px; padding: 12px; border-radius: 12px; border: none; font-size: 16px; text-align: center; margin-bottom: 10px;" />
-    <button id="unlockBtn" style="width: 240px; padding: 12px; border-radius: 12px; border: none; background: #2563eb; color: #fff; font-weight: 900; font-size: 14px; cursor: pointer;">ロック解除</button>
-    <p id="unlockErr" style="color: #fda4af; font-size: 12px; margin-top: 8px;"></p>
+    <div style="font-size: 36px; margin-bottom: 6px;">🔒</div>
+    <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 4px;">ふたりの家計簿</h2>
+    <p style="font-size: 12px; color: #94a3b8;">4桁のパスコードを入力してください</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+    <p id="unlockErr" style="color: #fda4af; font-size: 12px; min-height: 18px;"></p>
+    <div class="pin-pad" id="pinPadGrid"></div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -462,7 +524,7 @@
         <div class="brand">💑 ふたりの家計簿</div>
         <div class="header-actions">
           <button id="syncModalBtn" class="icon-btn">☁️ 同期</button>
-          <button id="passModalBtn" class="icon-btn">🔓 合言葉</button>
+          <button id="passModalBtn" class="icon-btn locked">🔒 ロック</button>
           <div class="user-toggle">
             <button id="roleShunBtn" class="active-shun">しゅん</button>
             <button id="roleYuBtn">ゆう</button>
@@ -637,15 +699,15 @@
 
   <div id="passModal" class="modal-backdrop">
     <div class="modal-card">
-      <div class="modal-title">🔒 2人だけの合言葉ロック設定</div>
+      <div class="modal-title">🔒 4桁パスコード設定</div>
       <p style="font-size:12px; color:var(--sub); margin-bottom:8px;">
-        合言葉を設定すると、次回アプリを開いた時にロック画面が表示されます（空欄で保存するとロック解除）。
+        数字4桁でパスコードを変更できます（初期値は 0615 に設定されています）。
       </p>
-      <label class="field-lbl">合言葉（4桁の数字や記念日など）</label>
-      <input type="text" id="passcodeSettingInput" class="field-inp" placeholder="例：0615" />
+      <label class="field-lbl">新しい4桁の数字</label>
+      <input type="tel" maxlength="4" pattern="[0-9]*" inputmode="numeric" id="passcodeSettingInput" class="field-inp" placeholder="例：0615" />
       <div class="modal-btns">
         <button id="lockNowBtn" class="cancel-btn">今すぐロック</button>
-        <button id="savePasscodeBtn" class="primary-btn" style="padding:12px;">設定を保存</button>
+        <button id="savePasscodeBtn" class="primary-btn" style="padding:12px;">4桁を保存</button>
       </div>
       <button id="closePassModalBtn" class="cancel-btn" style="width:100%; margin-top:8px;">閉じる</button>
     </div>
@@ -671,6 +733,8 @@
   <script>
     const DEFAULT_SUPABASE_URL = "https://plzmegdaifmlnhiscnle.supabase.co";
     const DEFAULT_SUPABASE_KEY = "sb_publishable_vU6wDJxHbk3jE0uD24GxUA_qgaX5IfL";
+    // ★4桁の初期パスコード（2人の好きな4桁に変更OK）
+    const DEFAULT_PASSCODE = "2310";
 
     const CATEGORIES = [
       { id: "スーパー", icon: "🛒" },
@@ -690,7 +754,8 @@
       keypadStr: "",
       selectedCat: "スーパー",
       expenses: [],
-      monthMeta: {}
+      monthMeta: {},
+      pinInput: ""
     };
 
     let sbClient = null;
@@ -907,7 +972,7 @@
         document.getElementById("settleDirectionText").textContent = "👨 しゅん → 👩 ゆう へ支払い";
         document.getElementById("settleAmountText").textContent = `¥${Math.abs(diff).toLocaleString()}`;
       } else {
-        document.getElementById("settleDirectionText").textContent = "差額なし（精算不要）";
+        document.getElementById("settleDirectionText").textContent = "差額なし（ぴったり精算済み）";
         document.getElementById("settleAmountText").textContent = "¥0";
       }
 
@@ -933,7 +998,64 @@
       document.getElementById("keypadDisplay").textContent = `¥${val.toLocaleString()}`;
     }
 
+    function updatePinDots() {
+      const dots = document.querySelectorAll("#pinDots .pin-dot");
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle("filled", idx < state.pinInput.length);
+      });
+    }
+
+    function setupPinLock() {
+      const activePass = localStorage.getItem("futari_passcode_4") || DEFAULT_PASSCODE;
+      document.getElementById("lockScreen").classList.add("active");
+
+      const pinGrid = document.getElementById("pinPadGrid");
+      const pinKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
+      pinKeys.forEach(k => {
+        const btn = document.createElement("button");
+        if (k === "") {
+          btn.className = "pin-key empty";
+        } else if (k === "⌫") {
+          btn.className = "pin-key del-key";
+          btn.textContent = "⌫";
+          btn.onclick = () => {
+            state.pinInput = state.pinInput.slice(0, -1);
+            document.getElementById("unlockErr").textContent = "";
+            updatePinDots();
+          };
+        } else {
+          btn.className = "pin-key";
+          btn.textContent = k;
+          btn.onclick = () => {
+            if (state.pinInput.length >= 4) return;
+            state.pinInput += k;
+            updatePinDots();
+            if (state.pinInput.length === 4) {
+              const currentPass = localStorage.getItem("futari_passcode_4") || DEFAULT_PASSCODE;
+              if (state.pinInput === currentPass) {
+                setTimeout(() => {
+                  document.getElementById("lockScreen").classList.remove("active");
+                  state.pinInput = "";
+                  document.getElementById("unlockErr").textContent = "";
+                  updatePinDots();
+                }, 120);
+              } else {
+                document.getElementById("unlockErr").textContent = "パスコードが違います";
+                setTimeout(() => {
+                  state.pinInput = "";
+                  updatePinDots();
+                }, 400);
+              }
+            }
+          };
+        }
+        pinGrid.appendChild(btn);
+      });
+    }
+
     function setupUI() {
+      setupPinLock();
+
       const catGrid = document.getElementById("catSelector");
       const editCatSelect = document.getElementById("editTxCategory");
       CATEGORIES.forEach(c => {
@@ -1179,36 +1301,24 @@
         showToast(meta.settled ? "✅ 今月の精算を完了にしました！" : "精算済みを解除しました");
       };
 
-      const savedPass = localStorage.getItem("futari_passcode") || "";
-      if (savedPass) {
-        document.getElementById("lockScreen").classList.add("active");
-        document.getElementById("passModalBtn").classList.add("locked");
-      }
-      document.getElementById("unlockBtn").onclick = () => {
-        const inp = document.getElementById("unlockInput").value;
-        if (inp === localStorage.getItem("futari_passcode")) {
-          document.getElementById("lockScreen").classList.remove("active");
-          document.getElementById("unlockInput").value = "";
-          document.getElementById("unlockErr").textContent = "";
-        } else {
-          document.getElementById("unlockErr").textContent = "合言葉が違います";
-        }
-      };
       document.getElementById("passModalBtn").onclick = () => {
-        document.getElementById("passcodeSettingInput").value = localStorage.getItem("futari_passcode") || "";
+        document.getElementById("passcodeSettingInput").value = localStorage.getItem("futari_passcode_4") || DEFAULT_PASSCODE;
         document.getElementById("passModal").classList.add("open");
       };
       document.getElementById("savePasscodeBtn").onclick = () => {
         const val = document.getElementById("passcodeSettingInput").value.trim();
-        localStorage.setItem("futari_passcode", val);
-        document.getElementById("passModalBtn").classList.toggle("locked", !!val);
+        if (!/^\d{4}$/.test(val)) {
+          showToast("数字4桁で入力してね！");
+          return;
+        }
+        localStorage.setItem("futari_passcode_4", val);
         document.getElementById("passModal").classList.remove("open");
-        showToast(val ? "🔒 合言葉を設定しました" : "🔓 合言葉ロックを解除しました");
+        showToast("🔒 4桁パスコードを変更しました");
       };
       document.getElementById("lockNowBtn").onclick = () => {
-        const val = localStorage.getItem("futari_passcode");
-        if (!val) { showToast("先に合言葉を保存してね！"); return; }
         document.getElementById("passModal").classList.remove("open");
+        state.pinInput = "";
+        updatePinDots();
         document.getElementById("lockScreen").classList.add("active");
       };
       document.getElementById("closePassModalBtn").onclick = () => document.getElementById("passModal").classList.remove("open");
