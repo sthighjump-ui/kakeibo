@@ -521,7 +521,7 @@
               <div style="font-size:11px; color:var(--sub);">毎月ゆうの支払いに自動加算</div>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="rent-amt" id="rentAmountText">¥75,000</span>
+              <span class="rent-amt" id="rentAmountText">¥0</span>
               <button id="thankRentBtn" class="act-btn">💖 ありがとう</button>
             </div>
           </div>
@@ -709,13 +709,13 @@
 
     function ensureMonthMeta(m) {
       if (!state.monthMeta[m]) {
-        state.monthMeta[m] = { month: m, rent_amount: 75000, rent_thanked: false, settled: false };
+        state.monthMeta[m] = { month: m, rent_amount: 0, rent_thanked: false, settled: false };
       }
       return state.monthMeta[m];
     }
 
     function saveLocal() {
-      localStorage.setItem("futari_kakeibo_v3", JSON.stringify({
+      localStorage.setItem("futari_kakeibo_v4", JSON.stringify({
         expenses: state.expenses,
         monthMeta: state.monthMeta,
         shunRatio: state.shunRatio
@@ -723,7 +723,8 @@
     }
 
     function loadLocal() {
-      const raw = localStorage.getItem("futari_kakeibo_v3");
+      localStorage.removeItem("futari_kakeibo_v3");
+      const raw = localStorage.getItem("futari_kakeibo_v4");
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
@@ -732,15 +733,7 @@
           state.shunRatio = parsed.shunRatio ?? 50;
         } catch (e) {}
       }
-      if (state.expenses.length === 0) {
-        state.expenses = [
-          { id: "init-1", month: "2026-11", date: "2026-11-05", category: "スーパー", title: "ツルヤ 週末まとめ買い", amount: 6480, payer: "shun", source: "mf", thanked: true },
-          { id: "init-2", month: "2026-11", date: "2026-11-10", category: "外食", title: "イタリアンディナー", amount: 5200, payer: "yu", source: "manual", thanked: false },
-          { id: "init-3", month: "2026-11", date: "2026-11-14", category: "日用品", title: "ドラッグストア 洗剤ほか", amount: 2350, payer: "shun", source: "manual", thanked: false }
-        ];
-        ensureMonthMeta("2026-11");
-        saveLocal();
-      }
+      ensureMonthMeta(state.currentMonth);
     }
 
     async function initSupabase() {
@@ -761,10 +754,8 @@
           sbClient.from("kakeibo_months").select("*")
         ]);
 
-        if (!expRes.error && expRes.data && expRes.data.length > 0) {
+        if (!expRes.error && expRes.data) {
           state.expenses = expRes.data;
-        } else if (!expRes.error && expRes.data && expRes.data.length === 0 && state.expenses.length > 0) {
-          await sbClient.from("kakeibo_expenses").upsert(state.expenses);
         }
         if (!metaRes.error && metaRes.data) {
           metaRes.data.forEach(row => { state.monthMeta[row.month] = row; });
@@ -916,7 +907,7 @@
         document.getElementById("settleDirectionText").textContent = "👨 しゅん → 👩 ゆう へ支払い";
         document.getElementById("settleAmountText").textContent = `¥${Math.abs(diff).toLocaleString()}`;
       } else {
-        document.getElementById("settleDirectionText").textContent = "差額なし（ぴったり精算済み）";
+        document.getElementById("settleDirectionText").textContent = "差額なし（精算不要）";
         document.getElementById("settleAmountText").textContent = "¥0";
       }
 
