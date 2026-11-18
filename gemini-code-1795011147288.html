@@ -41,7 +41,6 @@
       box-shadow: 0 0 24px rgba(15, 23, 42, 0.06);
       position: relative;
     }
-    /* ヘッダー */
     header {
       position: sticky;
       top: 0;
@@ -93,7 +92,6 @@
     .user-toggle button.active-shun { background: var(--shun); color: #fff; }
     .user-toggle button.active-yu { background: var(--yu); color: #fff; }
 
-    /* 月次切り替えバー */
     .month-bar {
       display: flex;
       justify-content: space-between;
@@ -151,7 +149,6 @@
       align-items: center;
     }
 
-    /* 合計サマリー */
     .total-hero { text-align: center; padding: 6px 0 12px; }
     .total-hero .lbl { font-size: 12px; font-weight: 700; color: var(--sub); }
     .total-hero .val { font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin-top: 2px; }
@@ -174,7 +171,6 @@
     .split-box.yu .name { color: var(--yu); }
     .split-box .amt { font-size: 18px; font-weight: 900; margin-top: 2px; }
 
-    /* 光熱費・入力漏れ防止チップ */
     .utility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .util-chip {
       border-radius: 12px;
@@ -190,7 +186,6 @@
     .util-chip .u-name { font-size: 12px; font-weight: 800; }
     .util-chip .u-stat { font-size: 11px; font-weight: 700; margin-top: 2px; }
 
-    /* 家賃固定カード */
     .rent-row { display: flex; justify-content: space-between; align-items: center; }
     .rent-amt { font-size: 20px; font-weight: 900; color: var(--yu); }
     .mini-btn {
@@ -203,7 +198,6 @@
       cursor: pointer;
     }
 
-    /* タイムライン履歴 */
     .tx-item {
       display: flex;
       justify-content: space-between;
@@ -247,7 +241,6 @@
     }
     .act-btn.thanked { background: #ffe4e6; border-color: #fecdd3; color: var(--yu); }
 
-    /* 3秒クイック入力 */
     .amount-display {
       background: #0f172a;
       color: #fff;
@@ -304,7 +297,6 @@
     .primary-btn.yu-mode { background: var(--yu); }
     .primary-btn.ok-mode { background: var(--ok); }
 
-    /* MF CSV取込 */
     .drop-zone {
       border: 2px dashed #93c5fd;
       background: var(--shun-bg);
@@ -326,7 +318,6 @@
       margin-top: 8px;
     }
 
-    /* 精算画面 */
     .settle-box {
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #fff;
@@ -340,7 +331,6 @@
     .slider-wrap { margin: 12px 0; }
     input[type="range"] { width: 100%; }
 
-    /* 下部ナビ */
     nav.bottom-nav {
       position: fixed;
       bottom: 0;
@@ -370,7 +360,6 @@
     .nav-btn .n-ico { font-size: 20px; }
     .nav-btn.active { color: var(--shun); }
 
-    /* モーダル＆ロック画面 */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -454,7 +443,6 @@
 </head>
 <body>
 
-  <!-- 2人だけの合言葉ロック画面 -->
   <div id="lockScreen" class="lock-screen">
     <div style="font-size: 42px; margin-bottom: 10px;">🔒</div>
     <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 6px;">ふたりの家計簿</h2>
@@ -491,7 +479,6 @@
     </div>
 
     <main>
-      <!-- 1. ホーム画面 -->
       <section id="view-home" class="view active">
         <div class="card">
           <div class="total-hero">
@@ -514,7 +501,6 @@
           </div>
         </div>
 
-        <!-- 光熱費 入力漏れ防止チェック -->
         <div class="card">
           <div class="card-title">
             <span>⚡ 今月の光熱費チェック（タップで即入力）</span>
@@ -522,7 +508,6 @@
           <div class="utility-grid" id="utilityChecklist"></div>
         </div>
 
-        <!-- 毎月の家賃（ゆう支払い固定） -->
         <div class="card">
           <div class="card-title">
             <span>🏠 毎月の固定費（ゆうちゃん支払い）</span>
@@ -540,7 +525,6 @@
           </div>
         </div>
 
-        <!-- 支出タイムライン -->
         <div class="card">
           <div class="card-title">
             <span>📝 共通支出の履歴（タップで編集）</span>
@@ -550,7 +534,6 @@
         </div>
       </section>
 
-      <!-- 2. 3秒クイック入力画面 -->
       <section id="view-input" class="view">
         <div class="card">
           <div class="card-title">
@@ -567,7 +550,6 @@
         </div>
       </section>
 
-      <!-- 3. マネーフォワードCSV取込画面 -->
       <section id="view-mf" class="view">
         <div class="card">
           <div class="card-title"><span>📥 マネーフォワード明細CSV取込</span></div>
@@ -583,7 +565,6 @@
         </div>
       </section>
 
-      <!-- 4. 月末精算画面 -->
       <section id="view-settle" class="view">
         <div class="settle-box">
           <div class="settle-arrow" id="settleDirectionText">差額なし（精算不要）</div>
@@ -617,7 +598,6 @@
     </nav>
   </div>
 
-  <!-- 編集・削除モーダル -->
   <div id="editModal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-title">✏️ 履歴の編集・削除</div>
@@ -641,7 +621,6 @@
     </div>
   </div>
 
-  <!-- 家賃編集モーダル -->
   <div id="rentModal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-title">🏠 今月の家賃（ゆう支払い）を変更</div>
@@ -654,7 +633,6 @@
     </div>
   </div>
 
-  <!-- 合言葉設定モーダル -->
   <div id="passModal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-title">🔒 2人だけの合言葉ロック設定</div>
@@ -671,7 +649,6 @@
     </div>
   </div>
 
-  <!-- Supabase同期設定モーダル -->
   <div id="syncModal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-title">☁️ Supabase クラウドリアルタイム同期</div>
@@ -679,9 +656,9 @@
         SupabaseのProject URLとAnon Keyを設定すると、2人のスマホでデータがリアルタイム同期されます。
       </p>
       <label class="field-lbl">Supabase Project URL</label>
-      <input type="text" id="sbUrlInput" class="field-inp" placeholder="https://xxxx.supabase.co" />
+      <input type="text" id="sbUrlInput" class="field-inp" />
       <label class="field-lbl">Supabase Anon Public Key</label>
-      <input type="text" id="sbKeyInput" class="field-inp" placeholder="eyJhbGciOi..." />
+      <input type="text" id="sbKeyInput" class="field-inp" />
       <div class="modal-btns">
         <button id="closeSyncModalBtn" class="cancel-btn">閉じる</button>
         <button id="saveSyncBtn" class="primary-btn ok-mode" style="padding:12px;">接続して同期</button>
@@ -690,9 +667,8 @@
   </div>
 
   <script>
-    // ★ここに自分のSupabase情報を直接貼り付けておくと、初回から自動接続されます
-    const DEFAULT_SUPABASE_URL = "";
-    const DEFAULT_SUPABASE_KEY = "";
+    const DEFAULT_SUPABASE_URL = "https://plzmegdaifmlnhiscnle.supabase.co";
+    const DEFAULT_SUPABASE_KEY = "sb_publishable_vU6wDJxHbk3jE0uD24GxUA_qgaX5IfL";
 
     const CATEGORIES = [
       { id: "スーパー", icon: "🛒" },
@@ -765,7 +741,6 @@
       }
     }
 
-    // Supabase初期化とリアルタイム同期
     async function initSupabase() {
       const url = localStorage.getItem("sb_url") || DEFAULT_SUPABASE_URL;
       const key = localStorage.getItem("sb_key") || DEFAULT_SUPABASE_KEY;
@@ -786,6 +761,8 @@
 
         if (!expRes.error && expRes.data && expRes.data.length > 0) {
           state.expenses = expRes.data;
+        } else if (!expRes.error && expRes.data && expRes.data.length === 0 && state.expenses.length > 0) {
+          await sbClient.from("kakeibo_expenses").upsert(state.expenses);
         }
         if (!metaRes.error && metaRes.data) {
           metaRes.data.forEach(row => { state.monthMeta[row.month] = row; });
@@ -793,7 +770,6 @@
         saveLocal();
         renderAll();
 
-        // リアルタイム購読
         sbClient.channel("kakeibo-live")
           .on("postgres_changes", { event: "*", schema: "public", table: "kakeibo_expenses" }, async () => {
             const { data } = await sbClient.from("kakeibo_expenses").select("*");
@@ -841,14 +817,12 @@
       document.getElementById("currentMonthLabel").textContent = `${yy}年${parseInt(mm, 10)}月`;
       document.getElementById("settledBadge").style.display = meta.settled ? "inline-block" : "none";
 
-      // ロール表示更新
       document.getElementById("roleShunBtn").className = state.role === "shun" ? "active-shun" : "";
       document.getElementById("roleYuBtn").className = state.role === "yu" ? "active-yu" : "";
       document.getElementById("inputWhoLabel").textContent = state.role === "shun" ? "👨 しゅん の支払いとして登録" : "👩 ゆう の支払いとして登録";
       const subBtn = document.getElementById("submitExpenseBtn");
       subBtn.className = state.role === "yu" ? "primary-btn yu-mode" : "primary-btn";
 
-      // 当月支出集計
       const monthTx = state.expenses.filter(e => e.month === m);
       let shunTotal = 0;
       let yuTotal = Number(meta.rent_amount) || 0;
@@ -870,13 +844,11 @@
       document.getElementById("barShun").style.width = `${shunPct}%`;
       document.getElementById("barYu").style.width = `${yuPct}%`;
 
-      // 家賃表示
       document.getElementById("rentAmountText").textContent = `¥${Number(meta.rent_amount).toLocaleString()}`;
       const rentThankBtn = document.getElementById("thankRentBtn");
       rentThankBtn.className = meta.rent_thanked ? "act-btn thanked" : "act-btn";
       rentThankBtn.textContent = meta.rent_thanked ? "💖 ありがとう済" : "💖 ありがとう";
 
-      // 光熱費チェックリスト
       const utils = ["電気", "ガス", "水道"];
       const utilBox = document.getElementById("utilityChecklist");
       utilBox.innerHTML = "";
@@ -897,7 +869,6 @@
         utilBox.appendChild(div);
       });
 
-      // タイムライン履歴
       const listEl = document.getElementById("txListContainer");
       document.getElementById("txCountText").textContent = `${monthTx.length}件`;
       listEl.innerHTML = "";
@@ -931,7 +902,6 @@
         });
       }
 
-      // 精算計算
       const targetShun = Math.round(grandTotal * (state.shunRatio / 100));
       const diff = shunTotal - targetShun;
       document.getElementById("ratioLabelText").textContent = `しゅん ${state.shunRatio}% ： ゆう ${100 - state.shunRatio}%`;
@@ -971,7 +941,6 @@
     }
 
     function setupUI() {
-      // カテゴリボタン生成
       const catGrid = document.getElementById("catSelector");
       const editCatSelect = document.getElementById("editTxCategory");
       CATEGORIES.forEach(c => {
@@ -988,7 +957,6 @@
         editCatSelect.appendChild(opt);
       });
 
-      // テンキー生成
       const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "00", "0", "⌫"];
       const pad = document.getElementById("numpadGrid");
       keys.forEach(k => {
@@ -1003,16 +971,13 @@
         pad.appendChild(b);
       });
 
-      // 下部ナビ
       document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.onclick = () => switchTab(btn.dataset.tab);
       });
 
-      // ユーザー切替
       document.getElementById("roleShunBtn").onclick = () => { state.role = "shun"; renderAll(); };
       document.getElementById("roleYuBtn").onclick = () => { state.role = "yu"; renderAll(); };
 
-      // 月移動
       document.getElementById("prevMonthBtn").onclick = () => {
         const [y, m] = state.currentMonth.split("-").map(Number);
         const d = new Date(y, m - 2, 1);
@@ -1026,7 +991,6 @@
         renderAll();
       };
 
-      // 3秒入力登録
       document.getElementById("submitExpenseBtn").onclick = async () => {
         const amt = parseInt(state.keypadStr || "0", 10);
         if (amt <= 0) { showToast("金額を入力してね！"); return; }
@@ -1054,7 +1018,6 @@
         showToast("登録しました！");
       };
 
-      // タイムラインクリック（ありがとう・編集）
       document.getElementById("txListContainer").onclick = async (e) => {
         const thankId = e.target.dataset.thank;
         const editId = e.target.dataset.edit;
@@ -1080,7 +1043,6 @@
         }
       };
 
-      // 編集保存・削除
       document.getElementById("saveEditTxBtn").onclick = async () => {
         const id = document.getElementById("editTxId").value;
         const tx = state.expenses.find(x => x.id === id);
@@ -1105,7 +1067,6 @@
       };
       document.getElementById("closeEditModalBtn").onclick = () => document.getElementById("editModal").classList.remove("open");
 
-      // 家賃変更＆ありがとう
       document.getElementById("editRentBtn").onclick = () => {
         const meta = ensureMonthMeta(state.currentMonth);
         document.getElementById("rentAmountInput").value = meta.rent_amount;
@@ -1129,7 +1090,6 @@
         if (meta.rent_thanked) showToast("💖 家賃のありがとうを送りました！");
       };
 
-      // MF CSV取込（実ファイル＆サンプル）
       document.getElementById("mfSampleBtn").onclick = async () => {
         const samples = [
           { title: "ツルヤ 軽井沢店", category: "スーパー", amount: 4820, date: `${state.currentMonth}-18` },
@@ -1206,7 +1166,6 @@
         reader.readAsText(file, "Shift_JIS");
       };
 
-      // 精算スライダー＆完了ボタン
       document.getElementById("ratioSlider").oninput = (e) => {
         state.shunRatio = parseInt(e.target.value, 10);
         saveLocal();
@@ -1227,7 +1186,6 @@
         showToast(meta.settled ? "✅ 今月の精算を完了にしました！" : "精算済みを解除しました");
       };
 
-      // 合言葉ロック機能
       const savedPass = localStorage.getItem("futari_passcode") || "";
       if (savedPass) {
         document.getElementById("lockScreen").classList.add("active");
@@ -1262,7 +1220,6 @@
       };
       document.getElementById("closePassModalBtn").onclick = () => document.getElementById("passModal").classList.remove("open");
 
-      // Supabase同期モーダル
       document.getElementById("syncModalBtn").onclick = () => document.getElementById("syncModal").classList.add("open");
       document.getElementById("closeSyncModalBtn").onclick = () => document.getElementById("syncModal").classList.remove("open");
       document.getElementById("saveSyncBtn").onclick = async () => {
