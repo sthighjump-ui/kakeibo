@@ -1,4 +1,3 @@
-[gemini-code-1795012335706.html](https://github.com/user-attachments/files/35033650/gemini-code-1795012335706.html)
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,7 +7,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="ふたりの家計簿" />
   <title>ふたりの家計簿｜しゅん ＆ ゆう</title>
-  <!-- Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -27,12 +25,12 @@
       --warn-bg: #fffbeb;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
+    html, body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 88px;
+      min-height: 100vh;
     }
     .app-wrap {
       max-width: 480px;
@@ -41,12 +39,13 @@
       background: #f8fafc;
       box-shadow: 0 0 24px rgba(15, 23, 42, 0.06);
       position: relative;
+      padding-bottom: 96px;
     }
     header {
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
       padding: 10px 14px;
@@ -339,12 +338,13 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 480px;
-      background: #fff;
+      background: #ffffff;
       border-top: 1px solid var(--border);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      padding: 6px 4px 10px;
-      z-index: 40;
+      padding: 8px 4px calc(10px + env(safe-area-inset-bottom));
+      z-index: 50;
+      box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.05);
     }
     .nav-btn {
       border: none;
@@ -352,13 +352,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 2px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--sub);
       cursor: pointer;
     }
-    .nav-btn .n-ico { font-size: 20px; }
+    .nav-btn .n-ico { font-size: 20px; line-height: 1.1; }
     .nav-btn.active { color: var(--shun); }
 
     .modal-backdrop {
