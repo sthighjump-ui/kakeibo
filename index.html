@@ -413,7 +413,6 @@
       cursor: pointer;
     }
 
-    /* 4桁パスコード専用ロック画面 */
     .lock-screen {
       position: fixed;
       inset: 0;
@@ -497,13 +496,16 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s;
+      white-space: nowrap;
+      max-width: 92vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
 
-  <!-- 4桁パスコードロック画面 -->
   <div id="lockScreen" class="lock-screen">
     <div style="font-size: 36px; margin-bottom: 6px;">🔒</div>
     <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 4px;">ふたりの家計簿</h2>
@@ -718,7 +720,6 @@
   <script>
     const SUPABASE_URL = "https://plzmegdaifmlnhiscnle.supabase.co";
     const SUPABASE_KEY = "sb_publishable_vU6wDJxHbk3jE0uD24GxUA_qgaX5IfL";
-    // ★4桁の初期パスコード（2人の好きな4桁に変更OK）
     const DEFAULT_PASSCODE = "0615";
 
     const CATEGORIES = [
@@ -749,7 +750,7 @@
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.add("show");
-      setTimeout(() => el.classList.remove("show"), 2200);
+      setTimeout(() => el.classList.remove("show"), 2600);
     }
 
     function getCatIcon(catName) {
@@ -787,24 +788,32 @@
     }
 
     async function fetchLatestFromCloud(notify = false) {
-      if (!sbClient) return;
+      if (!sbClient) {
+        if (notify) showToast("⚠️ クラウド未接続です");
+        return;
+      }
       try {
         const [expRes, metaRes] = await Promise.all([
           sbClient.from("kakeibo_expenses").select("*"),
           sbClient.from("kakeibo_months").select("*")
         ]);
 
-        if (!expRes.error && expRes.data) {
-          state.expenses = expRes.data;
+        if (expRes.error) {
+          if (notify) showToast(`⚠️ 同期エラー: ${expRes.error.message}`);
+          return;
         }
-        if (!metaRes.error && metaRes.data) {
-          metaRes.data.forEach(row => { state.monthMeta[row.month] = row; });
+        if (metaRes.error) {
+          if (notify) showToast(`⚠️ 同期エラー: ${metaRes.error.message}`);
+          return;
         }
+
+        state.expenses = expRes.data || [];
+        (metaRes.data || []).forEach(row => { state.monthMeta[row.month] = row; });
         saveLocal();
         renderAll();
-        if (notify) showToast("🔄 最新のデータに更新しました");
+        if (notify) showToast(`☁️ 最新データに更新しました（${state.expenses.length}件）`);
       } catch (err) {
-        if (notify) showToast("更新に失敗しました");
+        if (notify) showToast("⚠️ 通信エラーが発生しました");
       }
     }
 
@@ -831,21 +840,30 @@
     async function syncExpenseUpsert(item) {
       saveLocal();
       if (sbClient) {
-        await sbClient.from("kakeibo_expenses").upsert(item);
+        const { error } = await sbClient.from("kakeibo_expenses").upsert(item);
+        if (error) {
+          showToast(`⚠️ クラウド保存失敗: ${error.message}`);
+        }
       }
     }
 
     async function syncExpenseDelete(id) {
       saveLocal();
       if (sbClient) {
-        await sbClient.from("kakeibo_expenses").delete().eq("id", id);
+        const { error } = await sbClient.from("kakeibo_expenses").delete().eq("id", id);
+        if (error) {
+          showToast(`⚠️ 削除同期失敗: ${error.message}`);
+        }
       }
     }
 
     async function syncMonthMetaUpsert(meta) {
       saveLocal();
       if (sbClient) {
-        await sbClient.from("kakeibo_months").upsert(meta);
+        const { error } = await sbClient.from("kakeibo_months").upsert(meta);
+        if (error) {
+          showToast(`⚠️ クラウド保存失敗: ${error.message}`);
+        }
       }
     }
 
